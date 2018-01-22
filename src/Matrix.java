@@ -149,6 +149,48 @@ public class Matrix {
 		}
 	}
 	/**
+	 * Adds this Matrix to another
+	 * @param other The Matrix to add to this one
+	 * @return The resulting Matrix of the addition
+	 */
+	public Matrix add(Matrix other) {
+		if(width == other.getWidth() && height == other.getHeight()) {
+			Matrix matrix = new Matrix(height, width);
+			for(int y = 0; y < height; y++) {
+				for(int x = 0; x < width; x++) {
+					matrix.set(y, x, get(y,x)+other.get(y, x));
+				}
+			}
+			return matrix;
+		}
+		else {
+			System.out.println("ERROR! Sizes of the two Matricies must be equal!");
+			return null;
+		}
+		
+	}
+	/**
+	 * Subtracts another Matrix from this one
+	 * @param other The Matrix to subtract from this one
+	 * @return The resulting Matrix of the subtraction
+	 */
+	public Matrix subtract(Matrix other) {
+		if(width == other.getWidth() && height == other.getHeight()) {
+			Matrix matrix = new Matrix(height, width);
+			for(int y = 0; y < height; y++) {
+				for(int x = 0; x < width; x++) {
+					matrix.set(y, x, get(y,x)-other.get(y, x));
+				}
+			}
+			return matrix;
+		}
+		else {
+			System.out.println("ERROR! Sizes of the two Matricies must be equal!");
+			return null;
+		}
+		
+	}
+	/**
 	 * Gets two Matricies from the given filename, with tabs as delimiters
 	 * @param fileName The name of the File with the data
 	 * @return Two Matricies in an array generated from the file
@@ -191,7 +233,7 @@ public class Matrix {
 		Matrix matrix2 = Matrix.getMatriciesFromFile("Test.txt")[1];
 		matrix.print();
 		System.out.println();
-		Matrix product = matrix.multiply(matrix2);
+		Matrix product = matrix.subtract(matrix2);
 		product.print();
 	}
  
