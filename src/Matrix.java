@@ -26,7 +26,7 @@ public class Matrix {
 		for(int i = 0; i < rows; i++) {
 			matrix.add(new ArrayList<Double>(columns));
 			for(int j = 0; j < columns; j++) {
-				matrix.get(i).add(null);
+				matrix.get(i).add(0.0);
 			}
 		}
 	}
@@ -130,8 +130,23 @@ public class Matrix {
 	 * @return The resulting Matrix of the multiplication
 	 */
 	public Matrix multiply(Matrix other) { 
+		if(width == other.getHeight()) {
 		Matrix matrix = new Matrix(height,other.getWidth());
-		return matrix;
+			for(int i = 0; i < height; i++) { //each row
+				for(int j = 0; j < other.getWidth(); j++) { //each column
+					for(int y = 0; y < width; y++) {
+						double val = matrix.get(i, j) + (get(i,y) * other.get(y,j));
+						matrix.set(i, j, val);
+					}
+				}
+				
+			}
+			return matrix;
+		}
+		else {
+			System.out.println("ERROR! A\'s width must equal B\'s Height!");
+			return null;
+		}
 	}
 	/**
 	 * Gets two Matricies from the given filename, with tabs as delimiters
@@ -172,10 +187,11 @@ public class Matrix {
 		return new Matrix[] {a,b};
 	}
 	public static void main(String[] args) {
-		Matrix matrix = Matrix.getMatriciesFromFile("test.txt")[0];
+		Matrix matrix = Matrix.getMatriciesFromFile("Test.txt")[0];
+		Matrix matrix2 = Matrix.getMatriciesFromFile("Test.txt")[1];
 		matrix.print();
 		System.out.println();
-		Matrix product = matrix.multiply(2);
+		Matrix product = matrix.multiply(matrix2);
 		product.print();
 	}
  
