@@ -1,18 +1,22 @@
-import java.io.File;
 import java.util.ArrayList;
-import java.util.Scanner;
 
 public class Matrix {
 	private ArrayList<ArrayList<Double>> matrix;
 	private int width, height;
 	/**
-	 * Creates a Matrix Object from an ArrayList<ArrayList<Double>>
-	 * @param matrix ArrayList<ArrayList<Double>> containing the data for the Matrix
+	 * Creates a Matrix Object from an ArrayList<Point>
+	 * @param matrix ArrayList<Point> containing the data for the Matrix
 	 */
-	public Matrix(ArrayList<ArrayList<Double>> matrix) {
-		this.matrix = matrix;
-		height = matrix.size();
+	public Matrix(ArrayList<Point> matrix) {
 		width = matrix.get(0).size();
+		height = matrix.size();
+		this.matrix = new ArrayList<ArrayList<Double>>(height);
+		for(int i = 0; i < height; i++) {
+			this.matrix.add(new ArrayList<Double>(width));
+			for(int j = 0; j < width; j++) {
+				this.matrix.get(i).add(matrix.get(i).getAsArray()[j]);
+			}
+		}
 	}
 	/**
 	 * Creates a blank Matrix with null values of the designated size
@@ -191,50 +195,38 @@ public class Matrix {
 		
 	}
 	/**
-	 * Gets two Matricies from the given filename, with tabs as delimiters
-	 * @param fileName The name of the File with the data
-	 * @return Two Matricies in an array generated from the file
+	 * Used to determine if it is a square Matrix
+	 * @return True if it is Square
 	 */
-	public static Matrix[] getMatriciesFromFile(String fileName) {
-		File file = new File(fileName);
-		Scanner scanner;
-		ArrayList<ArrayList<Double>> matrixOne = new ArrayList<ArrayList<Double>>(); 
-		ArrayList<ArrayList<Double>> matrixTwo = new ArrayList<ArrayList<Double>>();
-		try {
-			scanner = new Scanner(file);
-			while(scanner.hasNextLine()) {
-				String line = scanner.nextLine();
-				if(line.contains("x"))
-					continue;
-				String[] arr = line.split("\t");
-				if(arr.length < 4)
-					continue;
-				ArrayList<Double> arrOne = new ArrayList<Double>(2);
-				ArrayList<Double> arrTwo = new ArrayList<Double>(2);
-				arrOne.add(Double.parseDouble(arr[0]));
-				arrOne.add(Double.parseDouble(arr[1]));
-				arrTwo.add(Double.parseDouble(arr[2]));
-				arrTwo.add(Double.parseDouble(arr[3]));
-				
-				matrixOne.add(arrOne);
-				matrixTwo.add(arrTwo);
+	public boolean isSquare() {
+		return width == height;
+	}
+	/**
+	 * Gets the identity Matrix of the same size as the current Matrix
+	 * @return The identity Matrix
+	 */
+	public Matrix getIdentityMatrix() {
+		if(isSquare()) {
+			Matrix matrix = new Matrix(height,width);
+			for(int i = 0; i < width; i++) {
+				matrix.set(i, i, 1);
 			}
-			scanner.close();
-		} catch(Exception e) {
-			e.printStackTrace();
+			return matrix;
+		}
+		else {
+			System.out.println("Matrix must be square!");
 			return null;
 		}
-		Matrix a = new Matrix(matrixOne);
-		Matrix b = new Matrix(matrixTwo);
-		return new Matrix[] {a,b};
+		
 	}
-	public static void main(String[] args) {
-		Matrix matrix = Matrix.getMatriciesFromFile("Test.txt")[0];
-		Matrix matrix2 = Matrix.getMatriciesFromFile("Test.txt")[1];
-		matrix.print();
-		System.out.println();
-		Matrix product = matrix.subtract(matrix2);
-		product.print();
+	public Matrix getTranspose() {
+		Matrix result = new Matrix(width, height);
+		for(int y = 0; y < height; y++) {
+			for(int x = 0; x < width; x++) {
+				result.set(x, y,matrix.get(y).get(x));
+			}
+		}
+		return result;
 	}
  
 }
