@@ -60,9 +60,14 @@ public class Point {
 	
 	public static void main(String[] args) {
 		UnknownClass[] array = getPointsFromFile("2018 Spring Project 1 data.txt");
+		int i = 0;
 		for(UnknownClass unknown : array) {
-		
-			unknown.getCovarianceMatrix().print();
+			i++;
+			unknown.getAsMatrix().printToFile("data\\matrix"+i+" original.csv");
+			unknown.getAsMatrix(unknown.subtractMeanVector()).printToFile("data\\matrix"+i+" partA.csv");
+			unknown.getAsMatrix(unknown.subtractMeanVector()).getTranspose().printToFile("data\\matrix"+i+" partB.csv");
+			unknown.getSquareMatrix().printToFile("data\\matrix"+i+" partC.csv");
+			unknown.getCovarianceMatrix().printToFile("data\\matrix"+i+" partD.csv");
 			System.out.println();
 		}
 	}

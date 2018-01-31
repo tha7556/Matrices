@@ -1,3 +1,6 @@
+import java.io.File;
+import java.io.FileWriter;
+import java.io.PrintWriter;
 import java.util.ArrayList;
 
 public class Matrix {
@@ -99,6 +102,30 @@ public class Matrix {
 				else
 					System.out.println(arr.get(i));
 			}
+		}
+	}
+	public void printToFile(String fileName) {
+		File file = new File(fileName);
+		FileWriter fWriter = null;
+		PrintWriter pWriter = null;
+		try {
+			fWriter = new FileWriter(file);
+			pWriter = new PrintWriter(fWriter);
+		} catch(Exception e) {
+			e.printStackTrace();
+		}
+		for(ArrayList<Double> arr : matrix) {
+			for(int i = 0; i < arr.size(); i++) {
+				pWriter.print(arr.get(i)+",");
+				
+			}
+			pWriter.println();
+		}
+		try {
+			pWriter.close();
+			fWriter.close();
+		} catch(Exception e) {
+			e.printStackTrace();
 		}
 	}
 	/**
