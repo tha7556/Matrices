@@ -255,5 +255,59 @@ public class Matrix {
 		}
 		return result;
 	}
+	public void swapRows(int rowA, int rowB) {
+		ArrayList<Double> temp = matrix.get(rowA);
+		matrix.set(rowA, matrix.get(rowB));
+		matrix.set(rowB, temp);
+	}
+	public double findDeterminint() {
+		//System.out.println("start");
+		this.printToFile("Find determinint.csv");
+		int r = 0;
+		for(int j = 0; j < height; j++) {
+			int pivot = getMaxAbs(j);
+			if(get(pivot,j)== 0)
+				return 0;
+			if(pivot > j) {
+				swapRows(pivot,j);
+				printToFile("data\\AfterSwap"+r+".csv");
+				r++;
+			}
+			for(int i = j+1; i < height; i++) {
+				double d = get(i,j) / get(j,j);
+				//System.out.println("d = " + get(i,j)+"/"+get(j,j)+"  =  "+d);
+				for(int y = 0; y < width; y++) {
+					//rowJ[y] *= d;
+					double rJ = get(j,y)*d;
+					//System.out.println("J: "+j+", Y: "+y+"   = " + rJ);
+					set(i,y,get(i,y)-rJ);
+					
+				}
+			}
+		}
+		double val = 1;
+		for(int i = 0; i < width; i++) {
+			val *= get(i,i);
+		}
+		System.out.println(val);
+		return Math.pow(-1, r) * val;
+	}
+	public int getMaxAbs(int index) {
+		//System.out.println(index);
+		int result = -1;
+		double max = -1.0;
+		for(int i = index; i < height; i++) {
+			for(int y = 0; y < width; y++) {
+				double d = get(i,y);
+				//System.out.println("i: "+i+", y: "+y+" = "+d);
+				if(Math.abs(d) > max) {
+					max = Math.abs(d);
+					result = i;
+				}
+			}
+		}
+		//System.out.println(result);
+		return result;
+	}
  
 }

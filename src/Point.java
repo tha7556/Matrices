@@ -68,6 +68,8 @@ public class Point {
 			unknown.getAsMatrix(unknown.subtractMeanVector()).getTranspose().printToFile("data\\matrix"+i+" partB.csv");
 			unknown.getSquareMatrix().printToFile("data\\matrix"+i+" partC.csv");
 			unknown.getCovarianceMatrix().printToFile("data\\matrix"+i+" partD.csv");
+			double determinint = unknown.getCovarianceMatrix().findDeterminint();
+			System.out.println("Determinint: "+determinint);
 			System.out.println();
 		}
 	}
