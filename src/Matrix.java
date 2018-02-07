@@ -2,6 +2,7 @@ import java.io.File;
 import java.io.FileWriter;
 import java.io.PrintWriter;
 import java.util.ArrayList;
+import java.util.Scanner;
 
 public class Matrix {
 	private ArrayList<ArrayList<Double>> matrix;
@@ -261,53 +262,76 @@ public class Matrix {
 		matrix.set(rowB, temp);
 	}
 	public double findDeterminint() {
-		//System.out.println("start");
-		this.printToFile("Find determinint.csv");
 		int r = 0;
-		for(int j = 0; j < height; j++) {
-			int pivot = getMaxAbs(j);
-			if(get(pivot,j)== 0)
+ 		for(int j = 0; j < width-1; j++) { //maybe n-1
+			int p = getMaxAbs(j);
+			if(get(p,j) == 0.0) {
 				return 0;
-			if(pivot > j) {
-				swapRows(pivot,j);
-				printToFile("data\\AfterSwap"+r+".csv");
+			}
+			if(p > j) {
+				swapRows(p,j);
 				r++;
 			}
 			for(int i = j+1; i < height; i++) {
-				double d = get(i,j) / get(j,j);
-				//System.out.println("d = " + get(i,j)+"/"+get(j,j)+"  =  "+d);
-				for(int y = 0; y < width; y++) {
-					//rowJ[y] *= d;
-					double rJ = get(j,y)*d;
-					//System.out.println("J: "+j+", Y: "+y+"   = " + rJ);
-					set(i,y,get(i,y)-rJ);
-					
+				double d = get(i,j)/get(j,j);
+				for(int k = j; k < width; k++) {
+					double num = get(i,k) - (d * get(j,k));
+					set(i,k,num);
 				}
 			}
 		}
-		double val = 1;
-		for(int i = 0; i < width; i++) {
-			val *= get(i,i);
-		}
-		System.out.println(val);
-		return Math.pow(-1, r) * val;
+ 		double val = 1.0;
+ 		for(int n = 0; n < width; n++) {
+ 			System.out.println(get(n,n));
+ 			val *= get(n,n);
+ 		}
+ 		double result = Math.pow(-1, r) * val;
+ 		if(result == -0.0)
+ 			result = 0.0;
+ 		return result;
 	}
-	public int getMaxAbs(int index) {
+	private int getMaxAbs(int index) {
 		//System.out.println(index);
 		int result = -1;
 		double max = -1.0;
-		for(int i = index; i < height; i++) {
-			for(int y = 0; y < width; y++) {
-				double d = get(i,y);
-				//System.out.println("i: "+i+", y: "+y+" = "+d);
-				if(Math.abs(d) > max) {
-					max = Math.abs(d);
-					result = i;
-				}
+		for(int i = 0; i < height; i++) {
+			if(Math.abs(get(i,index)) > max) {
+				max = Math.abs(get(i,index));
+				result = i;
 			}
 		}
 		//System.out.println(result);
 		return result;
+	}
+	public static Matrix getFromFile(String fileName) {
+		ArrayList<ArrayList<Double>> matrix = new ArrayList<ArrayList<Double>>();
+		Scanner scanner = null;
+		try {
+			scanner = new Scanner(new File(fileName));
+			while(scanner.hasNextLine()) {
+				ArrayList<Double> array = new ArrayList<Double>();
+				String line = scanner.nextLine();
+				String[] arr = line.split("\t");
+				for(int i = 0; i < arr.length; i++) {
+					array.add(Double.parseDouble(arr[i].trim()));
+				}
+				matrix.add(array);
+			}
+			scanner.close();
+		} catch(Exception e) {
+			e.printStackTrace();
+		}
+		Matrix result = new Matrix(matrix.size(),matrix.get(0).size());
+		for(int y = 0; y < result.getHeight(); y++) {
+			for(int x = 0; x < result.getWidth(); x++) {
+				result.set(y, x, matrix.get(y).get(x));
+			}
+		}
+		return result;
+	}
+	public static void main(String[] args) {
+		Matrix m = getFromFile("TestMatrix.txt");
+		System.out.println(m.findDeterminint());
 	}
  
 }
