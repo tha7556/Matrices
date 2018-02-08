@@ -1,6 +1,9 @@
 import java.io.File;
 import java.io.FileWriter;
 import java.io.PrintWriter;
+import java.math.BigDecimal;
+import java.math.MathContext;
+import java.math.RoundingMode;
 import java.util.ArrayList;
 import java.util.Scanner;
 
@@ -261,13 +264,13 @@ public class Matrix {
 		matrix.set(rowA, matrix.get(rowB));
 		matrix.set(rowB, temp);
 	}
-	public double findDeterminint() {
+	public BigDecimal findDeterminint(int digits) {
 		Matrix m = getCopy();
 		int r = 0;
  		for(int j = 0; j < width-1; j++) { //maybe n-1
 			int p = m.findPivot(j);
 			if(m.get(p,j) == 0.0) {
-				return 0;
+				return BigDecimal.ZERO;
 			}
 			if(p > j) {
 				m.swapRows(p,j);
@@ -281,14 +284,15 @@ public class Matrix {
 				}
 			}
 		}
- 		double val = 1.0;
+ 		BigDecimal val = BigDecimal.ONE;
  		for(int n = 0; n < width; n++) {
- 			val *= m.get(n,n);
+ 			val = val.multiply(BigDecimal.valueOf(m.get(n,n)));
  		}
- 		double result = Math.pow(-1, r) * val;
- 		if(result == -0.0)
- 			result = 0.0;
+ 		BigDecimal result = BigDecimal.valueOf(Math.pow(-1, r)).multiply(val,new MathContext(digits,RoundingMode.HALF_EVEN));
  		return result;
+	}
+	public BigDecimal findDeterminint() {
+		return findDeterminint(5);
 	}
 	public Matrix getInverse() {
 		Matrix c = combineWith(getIdentityMatrix());
@@ -390,7 +394,8 @@ public class Matrix {
 		Matrix m = getFromFile("TestMatrix.txt");
 		Matrix c = m.combineWith(m.getIdentityMatrix());
 		c.printToFile("combined.csv");
-		m.getInverse().printToFile("inverse.csv");;
+		m.getInverse().printToFile("inverse.csv");
+		System.out.println(m.findDeterminint(3));
 		
 	}
  
