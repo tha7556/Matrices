@@ -267,7 +267,7 @@ public class Matrix {
 	public BigDecimal findDeterminint(int digits) {
 		Matrix m = getCopy();
 		int r = 0;
- 		for(int j = 0; j < width-1; j++) { //maybe n-1
+ 		for(int j = 0; j < width-1; j++) {
 			int p = m.findPivot(j);
 			if(m.get(p,j) == 0.0) {
 				return BigDecimal.ZERO;
@@ -307,7 +307,7 @@ public class Matrix {
 			for(int k = 0; k < c.getWidth(); k++) {
 				c.set(j, k, (c.get(j, k)/cJJ));
 			}
-			for(int i = 0; i < c.getHeight(); i++) { //here?
+			for(int i = 0; i < c.getHeight(); i++) { 
 				if(i != j) {
 					double cIJ = c.get(i, j);
 					for(int k = 0; k < c.getWidth(); k++) {
@@ -324,8 +324,6 @@ public class Matrix {
 			}
 		}
 		return result;
-		
-		
 	}
 	public Matrix combineWith(Matrix other) {
 		if(height != other.getHeight()) {
@@ -361,7 +359,6 @@ public class Matrix {
 				result = i;
 			}
 		}
-		//System.out.println(result);
 		return result;
 	}
 	public static Matrix getFromFile(String fileName) {
@@ -390,13 +387,27 @@ public class Matrix {
 		}
 		return result;
 	}
+	public PrecisionMatrix getPrecise() {
+		PrecisionMatrix result = new PrecisionMatrix(height,width);
+		for(int y = 0; y < height; y++) {
+			for(int x = 0; x < width; x++) {
+				result.set(y, x, BigDecimal.valueOf(get(y,x)));
+			}
+		}
+		return result;
+	}
+	public PrecisionMatrix getPrecise(int digits) {
+		PrecisionMatrix result = new PrecisionMatrix(height,width,digits);
+		for(int y = 0; y < height; y++) {
+			for(int x = 0; x < width; x++) {
+				result.set(y, x, BigDecimal.valueOf(get(y,x)));
+			}
+		}
+		return result;
+	}
 	public static void main(String[] args) {
-		Matrix m = getFromFile("TestMatrix.txt");
-		Matrix c = m.combineWith(m.getIdentityMatrix());
-		c.printToFile("combined.csv");
-		m.getInverse().printToFile("inverse.csv");
-		System.out.println(m.findDeterminint(3));
-		
+		Matrix matrix = Matrix.getFromFile("TestMatrix.txt");
+		System.out.println(matrix.findDeterminint());
 	}
  
 }
