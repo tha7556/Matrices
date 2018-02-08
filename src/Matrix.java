@@ -262,33 +262,82 @@ public class Matrix {
 		matrix.set(rowB, temp);
 	}
 	public double findDeterminint() {
+		Matrix m = getCopy();
 		int r = 0;
  		for(int j = 0; j < width-1; j++) { //maybe n-1
-			int p = getMaxAbs(j);
-			if(get(p,j) == 0.0) {
+			int p = m.getMaxAbs(j);
+			if(m.get(p,j) == 0.0) {
 				return 0;
 			}
 			if(p > j) {
-				swapRows(p,j);
+				m.swapRows(p,j);
 				r++;
 			}
 			for(int i = j+1; i < height; i++) {
-				double d = get(i,j)/get(j,j);
+				double d = m.get(i,j)/m.get(j,j);
 				for(int k = j; k < width; k++) {
-					double num = get(i,k) - (d * get(j,k));
-					set(i,k,num);
+					double num = m.get(i,k) - (d * m.get(j,k));
+					m.set(i,k,num);
 				}
 			}
 		}
  		double val = 1.0;
  		for(int n = 0; n < width; n++) {
- 			System.out.println(get(n,n));
- 			val *= get(n,n);
+ 			val *= m.get(n,n);
  		}
  		double result = Math.pow(-1, r) * val;
  		if(result == -0.0)
  			result = 0.0;
  		return result;
+	}
+	public void getInverse() {
+		Matrix c = combineWith(getIdentityMatrix());
+		for(int j = 0; j < c.getHeight(); j++) {
+			int p = c.getMaxAbs(j);
+			if(c.get(p, j) == 0.0) 
+				return;
+			if(p > j) {
+				c.swapRows(p, j);
+			}
+			for(int k = 0; k < c.getWidth(); k++) {
+				c.set(j, k, (c.get(j, k)/c.get(j, j)));
+			}
+			for(int i = 0; i < c.getHeight(); i++) {
+				if(i != j) {
+					for(int k = 0; k < c.getWidth(); k++) {
+						System.out.println(i);
+						double val = c.get(i, k) - c.get(i, j)*c.get(j, k);
+						c.set(i, k, val);
+					}
+				}
+			}
+		}
+		c.printToFile("inverse.csv");
+		
+	}
+	public Matrix combineWith(Matrix other) {
+		if(height != other.getHeight()) {
+			throw new RuntimeException("Heights do not match!");
+		}
+		int newWidth = width + other.getWidth();
+		ArrayList<ArrayList<Double>> newMatrix = new ArrayList<ArrayList<Double>>();
+		for(int y = 0; y < height; y++) {
+			ArrayList<Double> row = new ArrayList<Double>(newWidth);
+			for(double d : matrix.get(y)) {
+				row.add(d);
+			}
+			for(double d : other.getRow(y)) {
+				row.add(d);
+			}
+			newMatrix.add(row);
+		}
+		Matrix result = new Matrix(height,newWidth);
+		for(int y = 0; y < result.getHeight(); y++) {
+			for(int x = 0; x < result.getWidth(); x++) {
+				result.set(y, x, newMatrix.get(y).get(x));
+			}
+		}
+		return result;
 	}
 	private int getMaxAbs(int index) {
 		//System.out.println(index);
@@ -331,7 +380,10 @@ public class Matrix {
 	}
 	public static void main(String[] args) {
 		Matrix m = getFromFile("TestMatrix.txt");
-		System.out.println(m.findDeterminint());
+		Matrix c = m.combineWith(m.getIdentityMatrix());
+		c.printToFile("combined.csv");
+		m.getInverse();
+		
 	}
  
 }
