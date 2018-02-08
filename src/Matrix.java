@@ -265,7 +265,7 @@ public class Matrix {
 		Matrix m = getCopy();
 		int r = 0;
  		for(int j = 0; j < width-1; j++) { //maybe n-1
-			int p = m.getMaxAbs(j);
+			int p = m.findPivot(j);
 			if(m.get(p,j) == 0.0) {
 				return 0;
 			}
@@ -290,29 +290,37 @@ public class Matrix {
  			result = 0.0;
  		return result;
 	}
-	public void getInverse() {
+	public Matrix getInverse() {
 		Matrix c = combineWith(getIdentityMatrix());
 		for(int j = 0; j < c.getHeight(); j++) {
-			int p = c.getMaxAbs(j);
+			int p = c.findPivot(j);
 			if(c.get(p, j) == 0.0) 
-				return;
+				return null;
 			if(p > j) {
 				c.swapRows(p, j);
 			}
+			double cJJ = c.get(j, j);
 			for(int k = 0; k < c.getWidth(); k++) {
-				c.set(j, k, (c.get(j, k)/c.get(j, j)));
+				c.set(j, k, (c.get(j, k)/cJJ));
 			}
-			for(int i = 0; i < c.getHeight(); i++) {
+			for(int i = 0; i < c.getHeight(); i++) { //here?
 				if(i != j) {
+					double cIJ = c.get(i, j);
 					for(int k = 0; k < c.getWidth(); k++) {
-						System.out.println(i);
-						double val = c.get(i, k) - c.get(i, j)*c.get(j, k);
+						double val = c.get(i, k) - cIJ*c.get(j, k);
 						c.set(i, k, val);
 					}
 				}
 			}
 		}
-		c.printToFile("inverse.csv");
+		Matrix result = new Matrix(height,width);
+		for(int y = 0; y < height; y++) {
+			for(int x = 0; x < width; x++) {
+				result.set(y, x, c.get(y, x+width));
+			}
+		}
+		return result;
+		
 		
 	}
 	public Matrix combineWith(Matrix other) {
@@ -339,7 +347,7 @@ public class Matrix {
 		}
 		return result;
 	}
-	private int getMaxAbs(int index) {
+	private int findPivot(int index) {
 		//System.out.println(index);
 		int result = -1;
 		double max = -1.0;
@@ -382,7 +390,7 @@ public class Matrix {
 		Matrix m = getFromFile("TestMatrix.txt");
 		Matrix c = m.combineWith(m.getIdentityMatrix());
 		c.printToFile("combined.csv");
-		m.getInverse();
+		m.getInverse().printToFile("inverse.csv");;
 		
 	}
  
