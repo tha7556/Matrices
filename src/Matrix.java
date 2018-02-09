@@ -264,7 +264,7 @@ public class Matrix {
 		matrix.set(rowA, matrix.get(rowB));
 		matrix.set(rowB, temp);
 	}
-	public BigDecimal findDeterminint(int digits) {
+	public BigDecimal findDeterminant(int digits) {
 		Matrix m = getCopy();
 		int r = 0;
  		for(int j = 0; j < width-1; j++) {
@@ -291,8 +291,8 @@ public class Matrix {
  		BigDecimal result = BigDecimal.valueOf(Math.pow(-1, r)).multiply(val,new MathContext(digits,RoundingMode.HALF_EVEN));
  		return result;
 	}
-	public BigDecimal findDeterminint() {
-		return findDeterminint(5);
+	public BigDecimal findDeterminant() {
+		return findDeterminant(5);
 	}
 	public Matrix getInverse() {
 		Matrix c = combineWith(getIdentityMatrix());
@@ -407,7 +407,7 @@ public class Matrix {
 	}
 	public static void main(String[] args) {
 		Matrix matrix = Matrix.getFromFile("TestMatrix.txt");
-		System.out.println(matrix.findDeterminint());
+		System.out.println(matrix.findDeterminant());
 	}
  
 }

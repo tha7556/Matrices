@@ -213,7 +213,7 @@ public class PrecisionMatrix {
 		matrix.set(rowA, matrix.get(rowB));
 		matrix.set(rowB, temp);
 	}
-	public BigDecimal findDeterminint() {
+	public BigDecimal findDeterminant() {
 		PrecisionMatrix m = getCopy();
 		int r = 0;
  		for(int j = 0; j < width-1; j++) { //maybe n-1
@@ -241,7 +241,6 @@ public class PrecisionMatrix {
  		return result;
 	}
 	public PrecisionMatrix getInverse() {
-		printToFile("Start.csv");
 		PrecisionMatrix c = combineWith(getIdentityMatrix());
 		for(int j = 0; j < c.getHeight(); j++) {
 			int p = c.findPivot(j);
@@ -251,9 +250,6 @@ public class PrecisionMatrix {
 				c.swapRows(p, j);
 			}
 			BigDecimal cJJ = c.get(j, j);
-			//System.out.println(cJJ);
-			if(cJJ.compareTo(BigDecimal.ZERO) == 0)
-				c.printToFile("zero.csv");
 			for(int k = 0; k < c.getWidth(); k++) {
 				c.set(j, k, (c.get(j, k).divide(cJJ,context)));
 			}

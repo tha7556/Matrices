@@ -1,4 +1,5 @@
 import java.io.File;
+import java.math.BigDecimal;
 import java.util.Scanner;
 
 public class Point {
@@ -63,13 +64,12 @@ public class Point {
 		int i = 0;
 		for(UnknownClass unknown : array) {
 			i++;
-			unknown.getAsMatrix().printToFile("data\\matrix"+i+" original.csv");
-			unknown.getAsMatrix(unknown.subtractMeanVector()).printToFile("data\\matrix"+i+" partA.csv");
-			unknown.getAsMatrix(unknown.subtractMeanVector()).getTranspose().printToFile("data\\matrix"+i+" partB.csv");
-			unknown.getSquareMatrix().printToFile("data\\matrix"+i+" partC.csv");
-			unknown.getCovarianceMatrix().printToFile("data\\matrix"+i+" partD.csv");
-			double determinint = unknown.getCovarianceMatrix().findDeterminint();
-			System.out.println("Determinint: "+determinint);
+			System.out.println("\t\tClass: "+i);
+			System.out.println("Mean Vector: "+unknown.getMean());
+			unknown.getCovarianceMatrix().getPrecise().printToFile("data\\class"+i+" Covariance.csv");
+			BigDecimal determinant = unknown.getCovarianceMatrix().getPrecise(100).findDeterminant();
+			System.out.println("determinant: "+determinant);
+			unknown.getCovarianceMatrix().getPrecise(50).getInverse().printToFile("data\\class"+i+"Inverse.csv");
 			System.out.println();
 		}
 	}
