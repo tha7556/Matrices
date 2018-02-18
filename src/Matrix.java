@@ -7,7 +7,6 @@ import java.util.Scanner;
 /**
  * A Matrix class used for Matrix calculations
  * @author Tyler Atkinson
- *
  */
 public class Matrix {
 	private ArrayList<ArrayList<Double>> matrix;
@@ -183,8 +182,7 @@ public class Matrix {
 			return matrix;
 		}
 		else {
-			System.out.println("ERROR! A\'s width must equal B\'s Height!");
-			return null;
+			throw new RuntimeException("A\'s width must be equal to B\'s height!");
 		}
 	}
 	/**
@@ -203,8 +201,7 @@ public class Matrix {
 			return matrix;
 		}
 		else {
-			System.out.println("ERROR! Sizes of the two Matricies must be equal!");
-			return null;
+			throw new RuntimeException("Sizes of the two Matrices must be equal!");
 		}
 		
 	}
@@ -224,8 +221,7 @@ public class Matrix {
 			return matrix;
 		}
 		else {
-			System.out.println("ERROR! Sizes of the two Matricies must be equal!");
-			return null;
+			throw new RuntimeException("Sizes of the two Matrices must be equal!");
 		}
 		
 	}
