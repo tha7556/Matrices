@@ -4,6 +4,11 @@ import java.io.PrintWriter;
 import java.util.ArrayList;
 import java.util.Scanner;
 
+/**
+ * A Matrix class used for Matrix calculations
+ * @author Tyler Atkinson
+ *
+ */
 public class Matrix {
 	private ArrayList<ArrayList<Double>> matrix;
 	private int width, height;
@@ -33,14 +38,6 @@ public class Matrix {
 			matrix.add(new ArrayList<Double>(columns));
 			for(int j = 0; j < columns; j++) {
 				matrix.get(i).add(0.0);
-			}
-		}
-	}
-	public Matrix(int rows, int columns, double initialValue) {
-		this(rows,columns);
-		for(ArrayList<Double> arr : matrix) {
-			for(int i = 0; i < arr.size(); i++) {
-				arr.set(i, initialValue);
 			}
 		}
 	}
@@ -111,6 +108,10 @@ public class Matrix {
 			}
 		}
 	}
+	/**
+	 * Prints the Matrix to the given file in a csv format
+	 * @param fileName The file name to print to (include .csv)
+	 */
 	public void printToFile(String fileName) {
 		File file = new File(fileName);
 		FileWriter fWriter = null;
@@ -253,6 +254,10 @@ public class Matrix {
 		}
 		
 	}
+	/**
+	 * Creates a new Matrix of the transpose for this Matrix
+	 * @return The Transpose Matrix
+	 */
 	public Matrix getTranspose() {
 		Matrix result = new Matrix(width, height);
 		for(int y = 0; y < height; y++) {
@@ -262,11 +267,20 @@ public class Matrix {
 		}
 		return result;
 	}
+	/**
+	 * Swaps two rows inside of the Matrix
+	 * @param rowA The index of the first row to swap
+	 * @param rowB The index of the second row to swap
+	 */
 	public void swapRows(int rowA, int rowB) {
 		ArrayList<Double> temp = matrix.get(rowA);
 		matrix.set(rowA, matrix.get(rowB));
 		matrix.set(rowB, temp);
 	}
+	/**
+	 * Finds the Determinant (if there is one) and returns 0.0 if there isn't one
+	 * @return The Determinant or 0.0 if there isn't one
+	 */
 	public double findDeterminant() {
 		Matrix m = getCopy();
 		int r = 0;
@@ -294,6 +308,10 @@ public class Matrix {
  		double result = Math.pow(-1, r) * val;
  		return result;
 	}
+	/**
+	 * Creates a new Matrix of the Inverse for this Matrix
+	 * @return The Inverse Matrix of this Matrix
+	 */
 	public Matrix getInverse() {
 		Matrix c = combineWith(getIdentityMatrix());
 		for(int j = 0; j < c.getHeight(); j++) {
@@ -325,6 +343,11 @@ public class Matrix {
 		}
 		return result;
 	}
+	/**
+	 * Appends two Matrices together assuming that they are equal height
+	 * @param other The other Matrix to append to the end of this one
+	 * @return The combined Matrix of this one and another
+	 */
 	public Matrix combineWith(Matrix other) {
 		if(height != other.getHeight()) {
 			throw new RuntimeException("Heights do not match!");
@@ -349,6 +372,11 @@ public class Matrix {
 		}
 		return result;
 	}
+	/**
+	 * Finds the pivot which is used in the findDeterminant function
+	 * @param index The index of the current row
+	 * @return The index of the pivot row
+	 */
 	private int findPivot(int index) {
 		//System.out.println(index);
 		int result = -1;
@@ -361,6 +389,11 @@ public class Matrix {
 		}
 		return result;
 	}
+	/**
+	 * Creates a Matrix based on a file with columns seperated by tabs and rows by new lines
+	 * @param fileName The name of the file containing the Matrix data
+	 * @return The resulting Matrix from the file
+	 */
 	public static Matrix getFromFile(String fileName) {
 		ArrayList<ArrayList<Double>> matrix = new ArrayList<ArrayList<Double>>();
 		Scanner scanner = null;
