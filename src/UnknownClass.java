@@ -32,12 +32,23 @@ public class UnknownClass {
 		return result;
 	}
 	
-	public Matrix getSquareMatrix() {
-		Matrix difference = new Matrix(subtractMeanVector());
-		return difference.multiply(difference.getTranspose());
+	public Matrix[] getSquareMatricies() {
+		ArrayList<Point> vectors = subtractMeanVector();
+		Matrix[] result = new Matrix[vectors.size()];
+		for(int i = 0; i < vectors.size(); i++) {
+			result[i] = new Matrix(vectors.get(i));
+			result[i] = result[i].getTranspose().multiply(result[i]);
+		}
+		return result;
 	}
 	public Matrix getCovarianceMatrix() {
-		return getSquareMatrix().multiply(1.0/(double)points.size());
+		Matrix[] arr = getSquareMatricies();
+		Matrix result = new Matrix(arr[0].getWidth(),arr[0].getHeight());
+		for(Matrix m : arr) {
+			result = result.add(m);
+		}
+		return result.multiply(1.0/(double)points.size());
+		
 	}
 	public ArrayList<Point> copyPoints() {
 		ArrayList<Point> result = new ArrayList<Point>(getSize());

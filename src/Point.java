@@ -66,11 +66,9 @@ public class Point {
 			i++;
 			System.out.println("\t\tClass: "+i);
 			System.out.println("Mean Vector: "+unknown.getMean());
-			unknown.getCovarianceMatrix().getPrecise().printToFile("data\\class"+i+" Covariance.csv");
-			BigDecimal determinant = unknown.getCovarianceMatrix().getPrecise(100).findDeterminant();
-			System.out.println("determinant: "+determinant);
-			unknown.getCovarianceMatrix().getPrecise(50).getInverse().printToFile("data\\class"+i+"Inverse.csv");
-			System.out.println();
+			unknown.getCovarianceMatrix().printToFile("data\\class"+i+" Covariance.csv");
+			unknown.getCovarianceMatrix().print();
+			System.out.println("determinint: "+unknown.getCovarianceMatrix().findDeterminant());
 		}
 	}
 }

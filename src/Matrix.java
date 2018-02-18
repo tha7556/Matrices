@@ -14,16 +14,14 @@ public class Matrix {
 	 * Creates a Matrix Object from an ArrayList<Point>
 	 * @param matrix ArrayList<Point> containing the data for the Matrix
 	 */
-	public Matrix(ArrayList<Point> matrix) {
-		width = matrix.get(0).size();
-		height = matrix.size();
-		this.matrix = new ArrayList<ArrayList<Double>>(height);
-		for(int i = 0; i < height; i++) {
-			this.matrix.add(new ArrayList<Double>(width));
-			for(int j = 0; j < width; j++) {
-				this.matrix.get(i).add(matrix.get(i).getAsArray()[j]);
-			}
-		}
+	public Matrix(Point p) {
+		width = p.size();
+		height = 1;
+		matrix = new ArrayList<ArrayList<Double>>();
+		matrix.add(new ArrayList<Double>());
+		matrix.get(0).add(p.getX());
+		matrix.get(0).add(p.getY());
+		
 	}
 	/**
 	 * Creates a blank Matrix with null values of the designated size
@@ -38,6 +36,14 @@ public class Matrix {
 			matrix.add(new ArrayList<Double>(columns));
 			for(int j = 0; j < columns; j++) {
 				matrix.get(i).add(0.0);
+			}
+		}
+	}
+	public Matrix(int rows, int columns, double initialValue) {
+		this(rows,columns);
+		for(ArrayList<Double> arr : matrix) {
+			for(int i = 0; i < arr.size(); i++) {
+				arr.set(i, initialValue);
 			}
 		}
 	}
@@ -193,7 +199,7 @@ public class Matrix {
 			Matrix matrix = new Matrix(height, width);
 			for(int y = 0; y < height; y++) {
 				for(int x = 0; x < width; x++) {
-					matrix.set(y, x, get(y,x)+other.get(y, x));
+					matrix.set(y, x, get(y,x)+other.get(y, x));					
 				}
 			}
 			return matrix;
@@ -404,10 +410,6 @@ public class Matrix {
 			}
 		}
 		return result;
-	}
-	public static void main(String[] args) {
-		Matrix matrix = Matrix.getFromFile("TestMatrix.txt");
-		System.out.println(matrix.findDeterminant());
 	}
  
 }
