@@ -1,5 +1,4 @@
 import java.io.File;
-import java.math.BigDecimal;
 import java.util.Scanner;
 
 public class Point {
@@ -68,7 +67,7 @@ public class Point {
 			System.out.println("Mean Vector: "+unknown.getMean());
 			unknown.getCovarianceMatrix().printToFile("data\\class"+i+" Covariance.csv");
 			unknown.getCovarianceMatrix().print();
-			System.out.println("determinint: "+unknown.getCovarianceMatrix().findDeterminant());
+			System.out.println("\ndeterminint: "+unknown.getCovarianceMatrix().findDeterminant());
 		}
 	}
 }

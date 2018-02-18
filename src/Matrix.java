@@ -1,9 +1,6 @@
 import java.io.File;
 import java.io.FileWriter;
 import java.io.PrintWriter;
-import java.math.BigDecimal;
-import java.math.MathContext;
-import java.math.RoundingMode;
 import java.util.ArrayList;
 import java.util.Scanner;
 
@@ -270,13 +267,13 @@ public class Matrix {
 		matrix.set(rowA, matrix.get(rowB));
 		matrix.set(rowB, temp);
 	}
-	public BigDecimal findDeterminant(int digits) {
+	public double findDeterminant() {
 		Matrix m = getCopy();
 		int r = 0;
  		for(int j = 0; j < width-1; j++) {
 			int p = m.findPivot(j);
 			if(m.get(p,j) == 0.0) {
-				return BigDecimal.ZERO;
+				return 0.0;
 			}
 			if(p > j) {
 				m.swapRows(p,j);
@@ -290,15 +287,12 @@ public class Matrix {
 				}
 			}
 		}
- 		BigDecimal val = BigDecimal.ONE;
+ 		double val = 1.0;
  		for(int n = 0; n < width; n++) {
- 			val = val.multiply(BigDecimal.valueOf(m.get(n,n)));
+ 			val *= m.get(n,n);
  		}
- 		BigDecimal result = BigDecimal.valueOf(Math.pow(-1, r)).multiply(val,new MathContext(digits,RoundingMode.HALF_EVEN));
+ 		double result = Math.pow(-1, r) * val;
  		return result;
-	}
-	public BigDecimal findDeterminant() {
-		return findDeterminant(5);
 	}
 	public Matrix getInverse() {
 		Matrix c = combineWith(getIdentityMatrix());
@@ -392,24 +386,5 @@ public class Matrix {
 			}
 		}
 		return result;
-	}
-	public PrecisionMatrix getPrecise() {
-		PrecisionMatrix result = new PrecisionMatrix(height,width);
-		for(int y = 0; y < height; y++) {
-			for(int x = 0; x < width; x++) {
-				result.set(y, x, BigDecimal.valueOf(get(y,x)));
-			}
-		}
-		return result;
-	}
-	public PrecisionMatrix getPrecise(int digits) {
-		PrecisionMatrix result = new PrecisionMatrix(height,width,digits);
-		for(int y = 0; y < height; y++) {
-			for(int x = 0; x < width; x++) {
-				result.set(y, x, BigDecimal.valueOf(get(y,x)));
-			}
-		}
-		return result;
-	}
- 
+	} 
 }
