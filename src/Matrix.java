@@ -415,5 +415,43 @@ public class Matrix {
 			}
 		}
 		return result;
-	} 
+	}
+	/**
+	 * Calculates the coefficients for the characteristic polynomial
+	 * @return The coefficients in an Array for the characteristic polynomial
+	 */
+	public double[] faddeevLeVerrier() {
+		Matrix identity = getIdentityMatrix();
+		Matrix m = identity;
+		double c = 1.0;
+		double[] result = new double[width+1];
+		result[0] = c;
+		for(double k = 1; k <= width; k++) {
+			m = this.multiply(m);
+			c = (-1.0/k)*m.getTrace();
+			m = m.add(identity.multiply(c));
+			result[(int)k] = c;
+		}
+		return result;
+	}
+	/**
+	 * Calculates the sum of the diagonal from top left to bottom right. <br/>Works only if the Matrix is square
+	 * @return The trace value of the Matrix
+	 */
+	public double getTrace() {
+		if(isSquare()) {
+			double result = 0.0;
+			for(int i = 0; i < width; i++) {
+				result += get(i,i);
+			}
+			return result;
+		}
+		throw new RuntimeException("Matrix must be Square!");
+	}
+	public static void main(String[] args) {
+		Matrix m = getFromFile("Test.txt");
+		for(double d :m.faddeevLeVerrier()) {
+			System.out.println(d);
+		}
+	}
 }
