@@ -17,7 +17,7 @@ public class UnknownClass {
 	 * Creates an empty class with no Points
 	 */
 	public UnknownClass() {
-		points = new ArrayList<Point>();
+		points = new ArrayList<>();
 	}
 	/**
 	 * Gets the Points that are in the class
@@ -52,7 +52,7 @@ public class UnknownClass {
 	 */
 	public ArrayList<Point> subtractMeanVector() {
 		Point mean = getMean();
-		ArrayList<Point> result = new ArrayList<Point>(getSize());
+		ArrayList<Point> result = new ArrayList<>(getSize());
 		for(int i = 0; i < getSize(); i++) {
 			result.add(points.get(i).subtract(mean));
 		}
@@ -62,7 +62,7 @@ public class UnknownClass {
 	 * Makes each Point a square Matrix by multiplying each by its Transpose
 	 * @return An array of each Point as a square Matrix
 	 */
-	public Matrix[] getSquareMatricies() {
+	public Matrix[] getSquareMatrices() {
 		ArrayList<Point> vectors = subtractMeanVector();
 		Matrix[] result = new Matrix[vectors.size()];
 		for(int i = 0; i < vectors.size(); i++) {
@@ -76,7 +76,7 @@ public class UnknownClass {
 	 * @return The Covariance Matrix of the class
 	 */
 	public Matrix getCovarianceMatrix() {
-		Matrix[] arr = getSquareMatricies();
+		Matrix[] arr = getSquareMatrices();
 		Matrix result = new Matrix(arr[0].getWidth(),arr[0].getHeight());
 		for(Matrix m : arr) {
 			result = result.add(m);
@@ -89,9 +89,8 @@ public class UnknownClass {
 	 * @return A deep copy of the Point array
 	 */
 	public ArrayList<Point> copyPoints() {
-		ArrayList<Point> result = new ArrayList<Point>(getSize());
-		for(Point p : points)
-			result.add(p);
+		ArrayList<Point> result = new ArrayList<>(getSize());
+        result.addAll(points);
 		return result;
 	}
 	/**
@@ -100,5 +99,22 @@ public class UnknownClass {
 	 */
 	public int getSize() {
 		return points.size();
+	}
+	public static void main(String[] args) {
+		UnknownClass unknownClass = Point.getPointsFromFile("eigendataS2018.txt",1)[0];
+		Matrix m = unknownClass.getCovarianceMatrix();
+		System.out.println("Covariance:");
+		m.print();
+		System.out.println();
+		for(double d : m.findEigenValues()) {
+			System.out.println("root: " +d);
+		}
+		System.out.println("determinant: "+m.findDeterminant()+"\n\nEigenVectors:");
+		for(double d : m.findEigenValues()) {
+			Point vec = m.findEigenVector(d);
+			System.out.println("EigenVector: " + vec);
+			System.out.println("\tUnit Length: "+ Matrix.findUnitLength(vec));
+		}
+
 	}
 }

@@ -6,8 +6,9 @@ import java.util.Scanner;
  * @author Tyler Atkinson
  */
 public class Point {
+
 	private double x, y;
-	private int size = 2;
+	private int size;
 	/**
 	 * Creates a point based on (x,y) coordinates
 	 * @param x The x coordinate
@@ -16,6 +17,7 @@ public class Point {
 	public Point(double x, double y) {
 		this.x = x;
 		this.y = y;
+		this.size = 2;
 	}
 	/**
 	 * Gets the X coordinate
@@ -78,23 +80,22 @@ public class Point {
 	 * @param fileName The file name containing the data for the Points
 	 * @return An array of UnknownClasses, each containing many Points
 	 */
-	public static UnknownClass[] getPointsFromFile(String fileName) {
+	public static UnknownClass[] getPointsFromFile(String fileName, int numOfClasses) {
 		File file = new File(fileName);
 		Scanner scanner;
-		UnknownClass[] array = new UnknownClass[2];
-		array[0] = new UnknownClass();
-		array[1] = new UnknownClass();
+		UnknownClass[] array = new UnknownClass[numOfClasses];
+		for(int i = 0; i < numOfClasses; i++)
+			array[i] = new UnknownClass();
 		try {
 			scanner = new Scanner(file);
 			while(scanner.hasNextLine()) {
 				String line = scanner.nextLine();
-				if(line.contains("x"))
+				if(line.toLowerCase().contains("x")||line.contains("Eigendata"))
 					continue;
 				String[] arr = line.split("\t");
-				if(arr.length < 4)
-					continue;
-				array[0].addPoint(new Point(Double.parseDouble(arr[0]),Double.parseDouble(arr[1])));
-				array[1].addPoint(new Point(Double.parseDouble(arr[2]),Double.parseDouble(arr[3])));	
+				for(int i = 0; i < numOfClasses; i++) {
+					array[i].addPoint(new Point(Double.parseDouble(arr[i*2]),Double.parseDouble(arr[(i*2)+1])));
+				}
 			}
 			scanner.close();
 			return array;
@@ -105,16 +106,22 @@ public class Point {
 	}
 	
 	public static void main(String[] args) {
-		UnknownClass[] array = getPointsFromFile("2018 Spring Project 1 data.txt");
+		UnknownClass[] array = getPointsFromFile("2018 Spring Project 1 data.txt",2);
 		int i = 0;
 		for(UnknownClass unknown : array) {
 			i++;
-			System.out.println("\t\tClass: "+i);
+			System.out.println("\n\t\tClass: "+i);
 			System.out.println("Mean Vector: "+unknown.getMean());
 			unknown.getCovarianceMatrix().printToFile("data\\class"+i+" Covariance.csv");
+			System.out.println("Covariance: \n");
 			unknown.getCovarianceMatrix().print();
-			System.out.println("\ndeterminint: "+unknown.getCovarianceMatrix().findDeterminant()+"\n");
+			System.out.println("\ndeterminant: "+unknown.getCovarianceMatrix().findDeterminant()+"\n");
+			System.out.println("Inverse: \n");
 			unknown.getCovarianceMatrix().getInverse().print();
+			System.out.println();
+			for(double d : unknown.getCovarianceMatrix().findEigenValues()) {
+				System.out.println("root: " + d);
+			}
 		}
 	}
 }

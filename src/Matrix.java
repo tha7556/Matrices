@@ -449,21 +449,22 @@ public class Matrix {
 			throw new RuntimeException("Can only handle 3 coefficient");
 	}
 	public Point findEigenVector(double eigenValue) {
-		System.out.println("EigenVector: "+eigenValue);
 		if(isSquare() && width == 2) {
 			Matrix m = this.subtract(getIdentityMatrix().multiply(eigenValue));
-			m.print();
 			double x = m.get(0,1);
 			double y = -m.get(0,0);
 			if(x < 0 && y < 0) {
 				x = -x;
 				y = -y;
 			}
-			Point p = new Point(x,y);
-			return p;
+			return new Point(x,y);
 		}
 		else
 			throw new RuntimeException("Cannot compute larger non square Matrices");
+	}
+	public static  Point findUnitLength(Point eigenVector) {
+		double scalar = 1.0/(Math.sqrt(Math.pow(eigenVector.getX(),2.0)+Math.pow(eigenVector.getY(),2.0)));
+		return new Point(scalar*eigenVector.getX(),scalar*eigenVector.getY());
 	}
 	/**
 	 * Calculates the sum of the diagonal from top left to bottom right. <br>Works only if the Matrix is square
