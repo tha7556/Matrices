@@ -12,14 +12,14 @@ public class Matrix {
 	private ArrayList<ArrayList<Double>> matrix;
 	private int width, height;
 	/**
-	 * Creates a Matrix Object from an ArrayList<Point>
-	 * @param matrix ArrayList<Point> containing the data for the Matrix
+	 * Creates a Matrix Object from a single Point
+	 * @param p The point to put into the Matrix
 	 */
 	public Matrix(Point p) {
 		width = p.size();
 		height = 1;
-		matrix = new ArrayList<ArrayList<Double>>();
-		matrix.add(new ArrayList<Double>());
+		matrix = new ArrayList<>();
+		matrix.add(new ArrayList<>());
 		matrix.get(0).add(p.getX());
 		matrix.get(0).add(p.getY());
 		
@@ -32,9 +32,9 @@ public class Matrix {
 	public Matrix(int rows, int columns) {
 		width = columns;
 		height = rows;
-		matrix = new ArrayList<ArrayList<Double>>(rows);
+		matrix = new ArrayList<>(rows);
 		for(int i = 0; i < rows; i++) {
-			matrix.add(new ArrayList<Double>(columns));
+			matrix.add(new ArrayList<>(columns));
 			for(int j = 0; j < columns; j++) {
 				matrix.get(i).add(0.0);
 			}
@@ -122,9 +122,9 @@ public class Matrix {
 			e.printStackTrace();
 		}
 		for(ArrayList<Double> arr : matrix) {
-			for(int i = 0; i < arr.size(); i++) {
-				pWriter.print(arr.get(i)+",");
-				
+			for(double d : arr) {
+				pWriter.print(d+",");
+
 			}
 			pWriter.println();
 		}
@@ -153,7 +153,7 @@ public class Matrix {
 	 * @param scalar The scalar to multiply the Matrix by
 	 * @return The resulting Matrix of the multiplication
 	 */
-	public Matrix multiply(double scalar) { 
+	public Matrix multiply(double scalar) {
 		Matrix matrix = new Matrix(height, width);
 		for(int y = 0; y < height; y++) {
 			for(int x = 0; x < width; x++) {
@@ -167,7 +167,7 @@ public class Matrix {
 	 * @param other The Matrix to multiply this one by
 	 * @return The resulting Matrix of the multiplication
 	 */
-	public Matrix multiply(Matrix other) { 
+	public Matrix multiply(Matrix other) {
 		if(width == other.getHeight()) {
 		Matrix matrix = new Matrix(height,other.getWidth());
 			for(int i = 0; i < height; i++) { //each row
@@ -177,7 +177,7 @@ public class Matrix {
 						matrix.set(i, j, val);
 					}
 				}
-				
+
 			}
 			return matrix;
 		}
@@ -195,7 +195,7 @@ public class Matrix {
 			Matrix matrix = new Matrix(height, width);
 			for(int y = 0; y < height; y++) {
 				for(int x = 0; x < width; x++) {
-					matrix.set(y, x, get(y,x)+other.get(y, x));					
+					matrix.set(y, x, get(y,x)+other.get(y, x));
 				}
 			}
 			return matrix;
@@ -203,7 +203,7 @@ public class Matrix {
 		else {
 			throw new RuntimeException("Sizes of the two Matrices must be equal!");
 		}
-		
+
 	}
 	/**
 	 * Subtracts another Matrix from this one
@@ -223,7 +223,7 @@ public class Matrix {
 		else {
 			throw new RuntimeException("Sizes of the two Matrices must be equal!");
 		}
-		
+
 	}
 	/**
 	 * Used to determine if it is a square Matrix
@@ -248,7 +248,7 @@ public class Matrix {
 			System.out.println("Matrix must be square!");
 			return null;
 		}
-		
+
 	}
 	/**
 	 * Creates a new Matrix of the transpose for this Matrix
@@ -301,8 +301,7 @@ public class Matrix {
  		for(int n = 0; n < width; n++) {
  			val *= m.get(n,n);
  		}
- 		double result = Math.pow(-1, r) * val;
- 		return result;
+ 		return  Math.pow(-1, r) * val;
 	}
 	/**
 	 * Creates a new Matrix of the Inverse for this Matrix
@@ -312,7 +311,7 @@ public class Matrix {
 		Matrix c = combineWith(getIdentityMatrix());
 		for(int j = 0; j < c.getHeight(); j++) {
 			int p = c.findPivot(j);
-			if(c.get(p, j) == 0.0) 
+			if(c.get(p, j) == 0.0)
 				return null;
 			if(p > j) {
 				c.swapRows(p, j);
@@ -321,7 +320,7 @@ public class Matrix {
 			for(int k = 0; k < c.getWidth(); k++) {
 				c.set(j, k, (c.get(j, k)/cJJ));
 			}
-			for(int i = 0; i < c.getHeight(); i++) { 
+			for(int i = 0; i < c.getHeight(); i++) {
 				if(i != j) {
 					double cIJ = c.get(i, j);
 					for(int k = 0; k < c.getWidth(); k++) {
@@ -349,12 +348,10 @@ public class Matrix {
 			throw new RuntimeException("Heights do not match!");
 		}
 		int newWidth = width + other.getWidth();
-		ArrayList<ArrayList<Double>> newMatrix = new ArrayList<ArrayList<Double>>();
+		ArrayList<ArrayList<Double>> newMatrix = new ArrayList<>();
 		for(int y = 0; y < height; y++) {
-			ArrayList<Double> row = new ArrayList<Double>(newWidth);
-			for(double d : matrix.get(y)) {
-				row.add(d);
-			}
+			ArrayList<Double> row = new ArrayList<>(newWidth);
+			row.addAll(matrix.get(y));
 			for(double d : other.getRow(y)) {
 				row.add(d);
 			}
@@ -386,21 +383,23 @@ public class Matrix {
 		return result;
 	}
 	/**
-	 * Creates a Matrix based on a file with columns seperated by tabs and rows by new lines
+	 * Creates a Matrix based on a file with columns separated by tabs and rows by new lines
 	 * @param fileName The name of the file containing the Matrix data
 	 * @return The resulting Matrix from the file
 	 */
 	public static Matrix getFromFile(String fileName) {
-		ArrayList<ArrayList<Double>> matrix = new ArrayList<ArrayList<Double>>();
-		Scanner scanner = null;
+		ArrayList<ArrayList<Double>> matrix = new ArrayList<>();
+		Scanner scanner;
 		try {
 			scanner = new Scanner(new File(fileName));
 			while(scanner.hasNextLine()) {
-				ArrayList<Double> array = new ArrayList<Double>();
+				ArrayList<Double> array = new ArrayList<>();
 				String line = scanner.nextLine();
+				if(line.toLowerCase().contains("x")||line.contains("Eigendata"))
+					continue;
 				String[] arr = line.split("\t");
-				for(int i = 0; i < arr.length; i++) {
-					array.add(Double.parseDouble(arr[i].trim()));
+				for(String s : arr) {
+					array.add(Double.parseDouble(s.trim()));
 				}
 				matrix.add(array);
 			}
@@ -420,7 +419,7 @@ public class Matrix {
 	 * Calculates the coefficients for the characteristic polynomial
 	 * @return The coefficients in an Array for the characteristic polynomial
 	 */
-	public double[] faddeevLeVerrier() {
+	private double[] faddeevLeVerrier() {
 		Matrix identity = getIdentityMatrix();
 		Matrix m = identity;
 		double c = 1.0;
@@ -435,7 +434,39 @@ public class Matrix {
 		return result;
 	}
 	/**
-	 * Calculates the sum of the diagonal from top left to bottom right. <br/>Works only if the Matrix is square
+	 * Finds the EigenValues for a 2x2 Matrix using the Quadratic Equation
+	 * @return The EigenValues for the Matrix in an array
+	 */
+	public double[] findEigenValues() {
+		double[] coefficients = faddeevLeVerrier();
+		if(coefficients.length == 3) {
+			double[] result = new double[2];
+			result[0] = (-coefficients[1] + Math.sqrt(Math.pow(coefficients[1], 2.0)-(4.0*coefficients[0]*coefficients[2]))) / 2.0 * coefficients[0];
+			result[1] = (-coefficients[1] - Math.sqrt(Math.pow(coefficients[1], 2.0)-(4.0*coefficients[0]*coefficients[2]))) / 2.0 * coefficients[0];
+			return result;
+		}
+		else
+			throw new RuntimeException("Can only handle 3 coefficient");
+	}
+	public Point findEigenVector(double eigenValue) {
+		System.out.println("EigenVector: "+eigenValue);
+		if(isSquare() && width == 2) {
+			Matrix m = this.subtract(getIdentityMatrix().multiply(eigenValue));
+			m.print();
+			double x = m.get(0,1);
+			double y = -m.get(0,0);
+			if(x < 0 && y < 0) {
+				x = -x;
+				y = -y;
+			}
+			Point p = new Point(x,y);
+			return p;
+		}
+		else
+			throw new RuntimeException("Cannot compute larger non square Matrices");
+	}
+	/**
+	 * Calculates the sum of the diagonal from top left to bottom right. <br>Works only if the Matrix is square
 	 * @return The trace value of the Matrix
 	 */
 	public double getTrace() {
@@ -450,8 +481,14 @@ public class Matrix {
 	}
 	public static void main(String[] args) {
 		Matrix m = getFromFile("Test.txt");
-		for(double d :m.faddeevLeVerrier()) {
-			System.out.println(d);
+		System.out.println("Matrix:");
+		m.print();
+		System.out.println();
+		for(double d : m.findEigenValues()) {
+			System.out.println("root: " +d);
 		}
+		System.out.println("determinant: "+m.findDeterminant());
+		for(double d : m.findEigenValues())
+			System.out.println(m.findEigenVector(d));
 	}
 }
