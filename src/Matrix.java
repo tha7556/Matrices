@@ -461,6 +461,36 @@ public class Matrix {
 		else
 			throw new RuntimeException("Cannot compute larger non square Matrices");
 	}
+	public double[] gaussianElimination() {
+		double[] x = new double[10];
+		Matrix b = new Matrix(height,1);
+		Matrix c = combineWith(b);
+		c.print();
+		System.out.println("\nBefore loop1:");
+		for(int j = 0; j < height; j++) {
+			int p = c.findPivot(j);
+			if(c.get(p,j) == 0.0)
+				return null;
+			if(p > j)
+				c.swapRows(p,j);
+			double cJJ = c.get(j,j);
+			System.out.println("pivot: "+p);
+			c.print();
+			System.out.println("\nBefore loop:");
+
+			for(int i = 0; i < height; i++) {
+				if(i > j) {
+					double cIJ = c.get(i,j);
+					for(int k = 0; k < c.getWidth(); k++) {
+						double val = c.get(i,k) - (cIJ/cJJ)*c.get(j,k);
+						c.set(i,k,val);
+					}
+				}
+			}
+		}
+		c.print();
+		return x;
+	}
 	public static  Point findUnitLength(Point eigenVector) {
 		double scalar = 1.0/(Math.sqrt(Math.pow(eigenVector.getX(),2.0)+Math.pow(eigenVector.getY(),2.0)));
 		return new Point(scalar*eigenVector.getX(),scalar*eigenVector.getY());
@@ -484,11 +514,6 @@ public class Matrix {
 		System.out.println("Matrix:");
 		m.print();
 		System.out.println();
-		for(double d : m.findEigenValues()) {
-			System.out.println("root: " +d);
-		}
-		System.out.println("determinant: "+m.findDeterminant());
-		for(double d : m.findEigenValues())
-			System.out.println(m.findEigenVector(d));
+		m.gaussianElimination();
 	}
 }
