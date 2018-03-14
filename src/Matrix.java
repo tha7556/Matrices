@@ -371,7 +371,6 @@ public class Matrix {
 	 * @return The index of the pivot row
 	 */
 	private int findPivot(int index) {
-		//System.out.println(index);
 		int result = -1;
 		double max = -1.0;
 		for(int i = 0; i < height; i++) {
