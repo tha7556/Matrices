@@ -2,6 +2,7 @@ import java.io.File;
 import java.io.FileWriter;
 import java.io.PrintWriter;
 import java.util.ArrayList;
+import java.util.Random;
 import java.util.Scanner;
 
 /**
@@ -169,7 +170,7 @@ public class Matrix {
 	 */
 	public Matrix multiply(Matrix other) {
 		if(width == other.getHeight()) {
-		Matrix matrix = new Matrix(height,other.getWidth());
+			Matrix matrix = new Matrix(height,other.getWidth());
 			for(int i = 0; i < height; i++) { //each row
 				for(int j = 0; j < other.getWidth(); j++) { //each column
 					for(int y = 0; y < width; y++) {
@@ -182,6 +183,10 @@ public class Matrix {
 			return matrix;
 		}
 		else {
+			System.out.println("Trying to multiply: ");
+			print();
+			System.out.println("by:");
+			other.print();
 			throw new RuntimeException("A\'s width must be equal to B\'s height!");
 		}
 	}
@@ -447,7 +452,7 @@ public class Matrix {
 		else
 			throw new RuntimeException("Can only handle 3 coefficient");
 	}
-	public Point findEigenVector(double eigenValue) {
+	public double[] findEigenVector(double eigenValue) {
 		if(isSquare() && width == 2) {
 			Matrix m = this.subtract(getIdentityMatrix().multiply(eigenValue));
 			double x = m.get(0,1);
@@ -456,7 +461,14 @@ public class Matrix {
 				x = -x;
 				y = -y;
 			}
-			return new Point(x,y);
+			return new Point(x,y).getAsArray();
+		}
+		else if(isSquare() && width == 5) {
+			double[] arr = new double[width];
+			for(int i = 0; i < width; i++) {
+				arr[i] = Math.pow(eigenValue,i);
+			}
+			return arr;
 		}
 		else
 			throw new RuntimeException("Cannot compute larger non square Matrices");
@@ -491,9 +503,51 @@ public class Matrix {
 		c.print();
 		return x;
 	}
-	public static  Point findUnitLength(Point eigenVector) {
-		double scalar = 1.0/(Math.sqrt(Math.pow(eigenVector.getX(),2.0)+Math.pow(eigenVector.getY(),2.0)));
-		return new Point(scalar*eigenVector.getX(),scalar*eigenVector.getY());
+	public static double[] findUnitLengthVector(double[] eigenVector) {
+		double scalar = findUnitLength(eigenVector);
+		double[] result = new double[eigenVector.length];
+		for(int i = 0; i < eigenVector.length; i++) {
+			result[i] = (1.0/scalar) * eigenVector[i];
+		}
+		return result;
+	}
+	public static double findUnitLength(double[] eigenVector) {
+		double scalar = 0.0;
+		for(double d : eigenVector) {
+			scalar += Math.pow(d, 2.0);
+		}
+		return Math.sqrt(scalar);
+	}
+	public static double findUnitLength(Matrix eigenVector) {
+		double scalar = 0.0;
+		if(eigenVector.getWidth() == 1) {
+			for(int i = 0; i < eigenVector.getHeight(); i++)
+				scalar += Math.pow(eigenVector.get(i,0),2.0);
+		}
+		return Math.sqrt(scalar);
+	}
+	public void directMethod() {
+		Random rand = new Random();
+		double[] eigenVector = {rand.nextDouble(),rand.nextDouble()};
+		System.out.println("Running power method:");
+		double rUnitLength = 99999;
+		double epsilon = .000001;
+		int m = 100;
+		Matrix y = new Matrix(eigenVector.length,1);
+		for(int i = 0; i < eigenVector.length; i++) {
+			y.set(i,0,eigenVector[i]);
+		}
+		Matrix x = this.multiply(y);
+		double u = -1;
+		for(int i = 0; i < m && rUnitLength > epsilon; i++) {
+			System.out.println((i+1)+" iteration");
+			y = x.multiply(1.0/findUnitLength(x));
+			x = this.multiply(y);
+			u = (y.getTranspose().multiply(x)).multiply((y.getTranspose().multiply(y)).getInverse()).get(0,0);
+			Matrix r = (y.multiply(u)).subtract(x);
+			rUnitLength = findUnitLength(r);
+		}
+		System.out.println("\t\tValue of u: "+u);
 	}
 	/**
 	 * Calculates the sum of the diagonal from top left to bottom right. <br>Works only if the Matrix is square
@@ -514,6 +568,6 @@ public class Matrix {
 		System.out.println("Matrix:");
 		m.print();
 		System.out.println();
-		m.gaussianElimination();
+		m.directMethod();
 	}
 }

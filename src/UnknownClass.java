@@ -1,4 +1,5 @@
 import java.util.ArrayList;
+import java.util.Random;
 
 /**
  * An unclassified class based on a number of Points
@@ -111,10 +112,20 @@ public class UnknownClass {
 		}
 		System.out.println("determinant: "+m.findDeterminant()+"\n\nEigenVectors:");
 		for(double d : m.findEigenValues()) {
-			Point vec = m.findEigenVector(d);
-			System.out.println("EigenVector: " + vec);
-			System.out.println("\tUnit Length: "+ Matrix.findUnitLength(vec));
+			System.out.println("EigenValue: "+d);
+			double[] vec = m.findEigenVector(d);
+			System.out.println("\tUnit Length Vector: ");
+			System.out.println("\t\tScale: "+Matrix.findUnitLength(vec));
+			System.out.println("\t\tUnit Length Vectors:");
+			for(double dd : Matrix.findUnitLengthVector(vec))
+				System.out.print("\t\t"+dd+" ");
+			System.out.println("\n\t\tEigenvector:");
+			for(double dd : m.findEigenVector(d))
+				System.out.print("\t\t"+dd+" ");
+			System.out.println();
 		}
+		m.directMethod();
+
 
 	}
 }

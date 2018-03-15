@@ -106,22 +106,13 @@ public class Point {
 	}
 	
 	public static void main(String[] args) {
-		UnknownClass[] array = getPointsFromFile("2018 Spring Project 1 data.txt",2);
-		int i = 0;
-		for(UnknownClass unknown : array) {
-			i++;
-			System.out.println("\n\t\tClass: "+i);
-			System.out.println("Mean Vector: "+unknown.getMean());
-			unknown.getCovarianceMatrix().printToFile("data\\class"+i+" Covariance.csv");
-			System.out.println("Covariance: \n");
-			unknown.getCovarianceMatrix().print();
-			System.out.println("\ndeterminant: "+unknown.getCovarianceMatrix().findDeterminant()+"\n");
-			System.out.println("Inverse: \n");
-			unknown.getCovarianceMatrix().getInverse().print();
-			System.out.println();
-			for(double d : unknown.getCovarianceMatrix().findEigenValues()) {
-				System.out.println("root: " + d);
-			}
-		}
+		Matrix m = Matrix.getFromFile("Test2.txt");
+		System.out.println("Original Matrix:");
+		m.print();
+		System.out.println("Inverse:");
+		m.getInverse().print();
+		System.out.println("Determinant: "+m.findDeterminant());
+		m.getTranspose().print();
+
 	}
 }
